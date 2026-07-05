@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CyberLens</string>
+    <string name="ip_intel">IP Intelligence</string>
+    <string name="domain_analysis">Domain Analysis</string>
+    <string name="username_osint">Username OSINT</string>
+    <string name="image_reverse">Image Reverse Search</string>
+    <string name="web_scanner">Website Scanner</string>
+    <string name="threat_intel">Threat Intelligence</string>
+    <string name="scan_history">Scan History</string>
+    <string name="red_team">Red Team Tools</string>
+    <string name="consent_text">I confirm I am authorized to scan this target and accept full responsibility for lawful use.</string>
+    <string name="analyze">Analyze</string>
+    <string name="enter_ip">Enter IP Address</string>
+    <string name="enter_domain">Enter Domain or URL</string>
+    <string name="enter_username">Enter Username</string>
+</resources>

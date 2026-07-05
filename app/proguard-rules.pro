@@ -1,0 +1,6 @@
+-keep class com.cyberlens.app.data.remote.dto.** { *; }
+-keep class com.cyberlens.app.domain.model.** { *; }
+-keepattributes Signature
+-keepattributes *Annotation*
+-dontwarn okhttp3.**
+-dontwarn retrofit2.**
