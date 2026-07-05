@@ -71,8 +71,8 @@ data class ThreatInfo(
     val undetected: Int = 0,
     val riskLevel: RiskLevel = RiskLevel.UNKNOWN,
     val categories: Map<String, String> = emptyMap(),
-    val lastAnalysisDate: String?,
-    val country: String?,
+    val lastAnalysisDate: String? = null,
+    val country: String? = null,
     val tags: List<String> = emptyList()
 )
 

@@ -34,7 +34,7 @@ data class DashboardItem(
 fun DashboardScreen(navController: NavController) {
     val items = listOf(
         DashboardItem("IP Intelligence", "Geo, ASN, ISP & risk", Icons.Default.Language, CyberBlue, Routes.IP_INTEL),
-        DashboardItem("Domain Analysis", "WHOIS, DNS & SSL", Icons.Default.DnsRounded, CyberGreen, Routes.DOMAIN),
+        DashboardItem("Domain Analysis", "WHOIS, DNS & SSL", Icons.Default.Dns, CyberGreen, Routes.DOMAIN),
         DashboardItem("Username OSINT", "20+ platform lookup", Icons.Default.Person, CyberPurple, Routes.USERNAME),
         DashboardItem("Image Reverse", "Reverse image search", Icons.Default.ImageSearch, CyberOrange, Routes.IMAGE_REVERSE),
         DashboardItem("Web Scanner", "Security headers & SSL", Icons.Default.Security, CyberYellow, Routes.WEB_SCANNER),
