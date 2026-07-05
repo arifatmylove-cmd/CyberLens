@@ -107,6 +107,9 @@ dependencies {
     // Retrofit Scalars converter (for plain text responses)
     implementation(libs.retrofit.scalars)
 
+    // AppCompat (for theme)
+    implementation(libs.appcompat)
+
     // WorkManager
     implementation(libs.work.runtime.ktx)
 
