@@ -4,12 +4,26 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Outer ring -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00D4FF"
+        android:strokeWidth="3"
+        android:pathData="M54,20 A34,34 0 1,1 53.99,20 Z" />
+    <!-- Middle ring -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00D4FF"
+        android:strokeWidth="2.5"
+        android:pathData="M54,32 A22,22 0 1,1 53.99,32 Z" />
+    <!-- Center dot - drawn as a filled path approximating a circle -->
+    <path
+        android:fillColor="#00FF9D"
+        android:pathData="M54,46 A8,8 0 1,1 53.99,46 Z" />
+    <!-- Crosshair lines -->
     <path
         android:fillColor="#00D4FF"
-        android:pathData="M54,20 C35.2,20 20,35.2 20,54 C20,72.8 35.2,88 54,88 C72.8,88 88,72.8 88,54 C88,35.2 72.8,20 54,20 Z M54,30 C67.3,30 78,40.7 78,54 C78,67.3 67.3,78 54,78 C40.7,78 30,67.3 30,54 C30,40.7 40.7,30 54,30 Z M54,40 C46.3,40 40,46.3 40,54 C40,61.7 46.3,68 54,68 C61.7,68 68,61.7 68,54 C68,46.3 61.7,40 54,40 Z" />
-    <circle
-        android:fillColor="#00FF9D"
-        android:cx="54"
-        android:cy="54"
-        android:r="6" />
+        android:pathData="M54,14 L54,22 M54,86 L54,94 M14,54 L22,54 M86,54 L94,54"
+        android:strokeColor="#00D4FF"
+        android:strokeWidth="2" />
 </vector>
