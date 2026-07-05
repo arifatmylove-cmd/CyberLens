@@ -15,6 +15,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
@@ -34,13 +35,13 @@ object AppModule {
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
         .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = HttpLoggingInterceptor.Level.BASIC
         })
         .build()
 
-    @Provides
-    @Singleton
-    @Named("ipapi")
+    // ── Retrofit instances ────────────────────────────────────────────
+
+    @Provides @Singleton @Named("ipapi")
     fun provideIpApiRetrofit(client: OkHttpClient, gson: Gson): Retrofit =
         Retrofit.Builder()
             .baseUrl(BuildConfig.IPAPI_BASE_URL)
@@ -48,9 +49,7 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
-    @Provides
-    @Singleton
-    @Named("shodan")
+    @Provides @Singleton @Named("shodan")
     fun provideShodanRetrofit(client: OkHttpClient, gson: Gson): Retrofit =
         Retrofit.Builder()
             .baseUrl(BuildConfig.SHODAN_BASE_URL)
@@ -58,19 +57,15 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
-    @Provides
-    @Singleton
-    @Named("hackertarget")
+    @Provides @Singleton @Named("hackertarget")
     fun provideHackerTargetRetrofit(client: OkHttpClient): Retrofit =
         Retrofit.Builder()
             .baseUrl(BuildConfig.HACKERTARGET_BASE_URL)
             .client(client)
-            .addConverterFactory(retrofit2.converter.scalars.ScalarsConverterFactory.create())
+            .addConverterFactory(ScalarsConverterFactory.create())
             .build()
 
-    @Provides
-    @Singleton
-    @Named("virustotal")
+    @Provides @Singleton @Named("virustotal")
     fun provideVirusTotalRetrofit(client: OkHttpClient, gson: Gson): Retrofit =
         Retrofit.Builder()
             .baseUrl(BuildConfig.VIRUSTOTAL_BASE_URL)
@@ -78,9 +73,7 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
-    @Provides
-    @Singleton
-    @Named("cvedb")
+    @Provides @Singleton @Named("cvedb")
     fun provideCveDbRetrofit(client: OkHttpClient, gson: Gson): Retrofit =
         Retrofit.Builder()
             .baseUrl(BuildConfig.CVEDB_BASE_URL)
@@ -88,45 +81,57 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
-    @Provides
-    @Singleton
+    @Provides @Singleton @Named("saucenao")
+    fun provideSauceNaoRetrofit(client: OkHttpClient, gson: Gson): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BuildConfig.SAUCENAO_BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+
+    // ── API Services ──────────────────────────────────────────────────
+
+    @Provides @Singleton
     fun provideIpApiService(@Named("ipapi") retrofit: Retrofit): IpApiService =
         retrofit.create(IpApiService::class.java)
 
-    @Provides
-    @Singleton
+    @Provides @Singleton
     fun provideIpInfoApiService(@Named("ipapi") retrofit: Retrofit): IpInfoApiService =
         retrofit.create(IpInfoApiService::class.java)
 
-    @Provides
-    @Singleton
+    @Provides @Singleton
     fun provideShodanService(@Named("shodan") retrofit: Retrofit): ShodanInternetDbService =
         retrofit.create(ShodanInternetDbService::class.java)
 
-    @Provides
-    @Singleton
+    @Provides @Singleton
     fun provideHackerTargetService(@Named("hackertarget") retrofit: Retrofit): HackerTargetApiService =
         retrofit.create(HackerTargetApiService::class.java)
 
-    @Provides
-    @Singleton
+    @Provides @Singleton
     fun provideVirusTotalService(@Named("virustotal") retrofit: Retrofit): VirusTotalApiService =
         retrofit.create(VirusTotalApiService::class.java)
 
-    @Provides
-    @Singleton
+    @Provides @Singleton
     fun provideCveService(@Named("cvedb") retrofit: Retrofit): CveSearchApiService =
         retrofit.create(CveSearchApiService::class.java)
 
-    @Provides
-    @Singleton
+    @Provides @Singleton
+    fun provideSauceNaoService(@Named("saucenao") retrofit: Retrofit): SauceNaoApiService =
+        retrofit.create(SauceNaoApiService::class.java)
+
+    // ── Database ──────────────────────────────────────────────────────
+
+    @Provides @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, AppDatabase.DATABASE_NAME)
             .fallbackToDestructiveMigration()
             .build()
 
-    @Provides
-    @Named("vt_api_key")
-    fun provideVtApiKey(): String = "" // Set your VirusTotal API key here
+    // ── Named values ──────────────────────────────────────────────────
 
+    @Provides @Named("vt_api_key")
+    fun provideVtApiKey(): String = BuildConfig.VT_API_KEY
+
+    @Provides @Named("saucenao_api_key")
+    fun provideSauceNaoApiKey(): String = BuildConfig.SAUCENAO_API_KEY
 }

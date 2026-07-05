@@ -25,6 +25,9 @@ android {
         buildConfigField("String", "IPAPI_BASE_URL", "\"https://ipapi.co/\"")
         buildConfigField("String", "CVEDB_BASE_URL", "\"https://cve.circl.lu/api/\"")
         buildConfigField("String", "SHODAN_BASE_URL", "\"https://internetdb.shodan.io/\"")
+        buildConfigField("String", "SAUCENAO_BASE_URL", "\"https://saucenao.com/\"")
+        buildConfigField("String", "VT_API_KEY", "\"0f534fc80b261f5e993f8a82bc9d91b31eae344fcf7abd74f1b81896c62cc89f\"")
+        buildConfigField("String", "SAUCENAO_API_KEY", "\"\"")
     }
 
     buildTypes {
