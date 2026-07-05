@@ -29,6 +29,7 @@ import com.cyberlens.app.ui.viewmodel.UsernameViewModel
 fun UsernameOsintScreen(navController: NavController, vm: UsernameViewModel = hiltViewModel()) {
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val input by vm.inputText.collectAsStateWithLifecycle()
+    val consent by vm.consentGiven.collectAsStateWithLifecycle()
 
     Scaffold(
         containerColor = CyberBg,
@@ -45,7 +46,8 @@ fun UsernameOsintScreen(navController: NavController, vm: UsernameViewModel = hi
         ) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 ScanTextField(value = input, onValueChange = vm::onInputChange, placeholder = "johndoe", label = "Username to search")
-                ScanButton("SEARCH USERNAME", vm::search, input.isNotBlank() && uiState !is UiState.Loading, CyberPurple)
+                ConsentCheckbox(checked = consent, onCheckedChange = vm::onConsentChange)
+                ScanButton("SEARCH USERNAME", vm::search, consent && input.isNotBlank() && uiState !is UiState.Loading, CyberPurple)
             }
 
             when (val s = uiState) {

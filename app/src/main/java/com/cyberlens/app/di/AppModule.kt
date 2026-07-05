@@ -34,9 +34,15 @@ object AppModule {
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
-        .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BASIC
-        })
+        .apply {
+            // Only log in debug builds, and never log full URLs (which may contain API keys as query params)
+            if (BuildConfig.DEBUG) {
+                addInterceptor(HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.HEADERS
+                    redactHeader("Authorization")
+                })
+            }
+        }
         .build()
 
     // ── Retrofit instances ────────────────────────────────────────────
@@ -95,6 +101,7 @@ object AppModule {
     fun provideIpApiService(@Named("ipapi") retrofit: Retrofit): IpApiService =
         retrofit.create(IpApiService::class.java)
 
+    // IpInfoApiService uses ipapi.co as well (same JSON structure used for org/hostname)
     @Provides @Singleton
     fun provideIpInfoApiService(@Named("ipapi") retrofit: Retrofit): IpInfoApiService =
         retrofit.create(IpInfoApiService::class.java)

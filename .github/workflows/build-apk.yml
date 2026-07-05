@@ -40,6 +40,9 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build Debug APK
+        env:
+          VT_API_KEY: ${{ secrets.VT_API_KEY }}
+          SAUCENAO_API_KEY: ${{ secrets.SAUCENAO_API_KEY }}
         run: ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload Debug APK
@@ -50,6 +53,9 @@ jobs:
           retention-days: 30
 
       - name: Build Release APK (unsigned)
+        env:
+          VT_API_KEY: ${{ secrets.VT_API_KEY }}
+          SAUCENAO_API_KEY: ${{ secrets.SAUCENAO_API_KEY }}
         run: ./gradlew assembleRelease --no-daemon
 
       - name: Upload Release APK

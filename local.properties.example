@@ -1,0 +1,8 @@
+# Copy this file to local.properties and fill in your keys.
+# local.properties is gitignored — never commit actual keys.
+
+# VirusTotal API key (free at https://www.virustotal.com)
+VT_API_KEY=your_virustotal_key_here
+
+# SauceNAO API key (free at https://saucenao.com/user.php?page=search-api)
+SAUCENAO_API_KEY=your_saucenao_key_here

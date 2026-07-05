@@ -22,9 +22,14 @@ class UsernameViewModel @Inject constructor(
     private val _inputText = MutableStateFlow("")
     val inputText: StateFlow<String> = _inputText
 
+    private val _consentGiven = MutableStateFlow(false)
+    val consentGiven: StateFlow<Boolean> = _consentGiven
+
     fun onInputChange(value: String) { _inputText.value = value }
+    fun onConsentChange(value: Boolean) { _consentGiven.value = value }
 
     fun search() {
+        if (!_consentGiven.value) return
         val username = _inputText.value.trim()
         if (username.isBlank()) return
         viewModelScope.launch {

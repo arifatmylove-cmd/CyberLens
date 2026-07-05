@@ -248,11 +248,13 @@ class OsintRepository @Inject constructor(
             sock.connect(java.net.InetSocketAddress(target, port), 3000)
             sock.soTimeout = 3000
             val reader = sock.getInputStream().bufferedReader()
-            val banner = reader.readLine() ?: "No banner"
+            val line = reader.readLine() ?: "No banner"
             sock.close()
-            banner
+            line
         }.getOrDefault("Connection refused or no banner")
-        PortResult(port, true, getCommonService(port), banner)
+        val result = PortResult(port, true, getCommonService(port), banner)
+        saveToHistory(ScanType.BANNER_GRAB, "$target:$port", result, "UNKNOWN")
+        result
     }
 
     // ─── Red Team: WAF Detection ──────────────────────────────────────
@@ -286,13 +288,16 @@ class OsintRepository @Inject constructor(
             }
         }
 
-        WafDetectResult(
+        val wafResult = WafDetectResult(
             target = target,
             wafDetected = fingerprints.isNotEmpty(),
             wafName = wafName,
             confidence = if (fingerprints.size > 2) 95 else if (fingerprints.isNotEmpty()) 70 else 0,
             fingerprints = fingerprints
         )
+        saveToHistory(ScanType.WAF_DETECT, target, wafResult,
+            if (wafResult.wafDetected) "SAFE" else "UNKNOWN")
+        wafResult
     }
 
     // ─── CVE Lookup ───────────────────────────────────────────────────

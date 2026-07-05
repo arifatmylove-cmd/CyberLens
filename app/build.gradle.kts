@@ -26,8 +26,16 @@ android {
         buildConfigField("String", "CVEDB_BASE_URL", "\"https://cve.circl.lu/api/\"")
         buildConfigField("String", "SHODAN_BASE_URL", "\"https://internetdb.shodan.io/\"")
         buildConfigField("String", "SAUCENAO_BASE_URL", "\"https://saucenao.com/\"")
-        buildConfigField("String", "VT_API_KEY", "\"0f534fc80b261f5e993f8a82bc9d91b31eae344fcf7abd74f1b81896c62cc89f\"")
-        buildConfigField("String", "SAUCENAO_API_KEY", "\"\"")
+        // Keys are read from local.properties (local dev) or CI environment (GitHub Actions)
+        // Never commit actual keys to source control — set them via gradle properties or env
+        val vtKey = project.findProperty("VT_API_KEY")?.toString()
+            ?: System.getenv("VT_API_KEY")
+            ?: ""
+        val sauceNaoKey = project.findProperty("SAUCENAO_API_KEY")?.toString()
+            ?: System.getenv("SAUCENAO_API_KEY")
+            ?: ""
+        buildConfigField("String", "VT_API_KEY", "\"$vtKey\"")
+        buildConfigField("String", "SAUCENAO_API_KEY", "\"$sauceNaoKey\"")
     }
 
     buildTypes {
