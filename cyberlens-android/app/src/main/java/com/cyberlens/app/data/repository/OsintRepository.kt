@@ -55,13 +55,17 @@ class OsintRepository @Inject constructor(
         }
 
         // 1. IPGeolocation.io — primary geo source
-        val geo = runCatching { ipGeoService.getIpGeo(ipGeoApiKey, ip).body() }.getOrNull()
+        val geo = withContext(Dispatchers.IO) {
+            runCatching { ipGeoService.getIpGeo(ipGeoApiKey, ip).body() }.getOrNull()
+        }
 
         // 2. Shodan full API — ports, vulns, banners
-        val shodan = runCatching { shodanApiService.getHost(ip, shodanApiKey).body() }.getOrNull()
+        val shodan = withContext(Dispatchers.IO) {
+            runCatching { shodanApiService.getHost(ip, shodanApiKey).body() }.getOrNull()
+        }
 
         // 3. Fallback to InternetDB if Shodan API fails
-        val inetDb = if (shodan == null) {
+        val inetDb = if (shodan == null) withContext(Dispatchers.IO) {
             runCatching { shodanInternetDb.getInternetDbInfo(ip).body() }.getOrNull()
         } else null
 
@@ -107,11 +111,15 @@ class OsintRepository @Inject constructor(
         val (headers, statusCode, sslExpiry, sslValid) = directHttpsHeaders("https://$clean")
 
         // 2. DNS lookup via HackerTarget (plain-text, free)
-        val dnsRaw = runCatching { hackerTargetService.dnsLookup(clean).body() ?: "" }.getOrDefault("")
+        val dnsRaw = withContext(Dispatchers.IO) {
+            runCatching { hackerTargetService.dnsLookup(clean).body() ?: "" }.getOrDefault("")
+        }
         val dnsRecords = parseDnsRecords(dnsRaw)
 
         // 3. WHOIS via WhoisXML
-        val whoisResp = runCatching { whoisXmlService.getWhois(whoisXmlApiKey, clean).body() }.getOrNull()
+        val whoisResp = withContext(Dispatchers.IO) {
+            runCatching { whoisXmlService.getWhois(whoisXmlApiKey, clean).body() }.getOrNull()
+        }
         val whoisData = formatWhoisData(whoisResp?.whoisRecord)
 
         // 4. Evaluate security headers from real response
@@ -227,7 +235,9 @@ class OsintRepository @Inject constructor(
         val isIp = target.matches(Regex("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$"))
         val threatInfo = if (vtApiKey.isNotBlank()) {
             if (isIp) {
-                val body = runCatching { virusTotalService.getIpReport(vtApiKey, target).body() }.getOrNull()
+                val body = withContext(Dispatchers.IO) {
+                    runCatching { virusTotalService.getIpReport(vtApiKey, target).body() }.getOrNull()
+                }
                 val malicious = body?.detectedUrls?.count { (it.positives ?: 0) > 0 } ?: 0
                 ThreatInfo(
                     target       = target,
@@ -237,7 +247,9 @@ class OsintRepository @Inject constructor(
                     riskLevel    = if (malicious > 0) RiskLevel.DANGEROUS else RiskLevel.SAFE
                 )
             } else {
-                val body = runCatching { virusTotalService.getDomainReport(vtApiKey, target).body() }.getOrNull()
+                val body = withContext(Dispatchers.IO) {
+                    runCatching { virusTotalService.getDomainReport(vtApiKey, target).body() }.getOrNull()
+                }
                 val malicious = body?.detectedUrls?.count { (it.positives ?: 0) > 0 } ?: 0
                 ThreatInfo(
                     target      = target,
@@ -258,7 +270,9 @@ class OsintRepository @Inject constructor(
     // ─── Red Team: Nmap via HackerTarget ─────────────────────────────────────
     suspend fun nmapScan(target: String, scanType: String): Result<NmapScanResult> = runCatching {
         val start = System.currentTimeMillis()
-        val raw = runCatching { hackerTargetService.nmapScan(target).body() ?: "" }.getOrDefault("")
+        val raw = withContext(Dispatchers.IO) {
+            runCatching { hackerTargetService.nmapScan(target).body() ?: "" }.getOrDefault("")
+        }
         if (raw.startsWith("error") || raw.startsWith("API count")) {
             throw Exception("HackerTarget: $raw")
         }
@@ -402,7 +416,7 @@ class OsintRepository @Inject constructor(
 
     // ─── CVE Lookup ──────────────────────────────────────────────────────────
     suspend fun searchCve(vendor: String, product: String): Result<List<CveInfo>> = runCatching {
-        val resp = cveService.searchCve(vendor, product)
+        val resp = withContext(Dispatchers.IO) { cveService.searchCve(vendor, product) }
         (resp.body() ?: emptyList()).map { dto ->
             CveInfo(
                 id            = dto.id ?: "Unknown",

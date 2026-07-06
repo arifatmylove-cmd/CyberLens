@@ -80,7 +80,7 @@ interface VirusTotalApiService {
     @GET("ip-address/report")
     suspend fun getIpReport(
         @Query("apikey") apiKey: String,
-        @Query("resource") resource: String
+        @Query("ip") resource: String
     ): Response<VtIpReportDto>
 
     @GET("domain/report")
