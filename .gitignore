@@ -1,3 +1,4 @@
+# Android
 local.properties
 *.iml
 .gradle
@@ -8,8 +9,24 @@ local.properties
 /captures
 .externalNativeBuild
 .cxx
-local.properties
 *.jks
 *.keystore
 *.p12
-app/build/
+cyberlens-android/app/build/
+
+# Node / JS
+dist
+tmp
+out-tsc
+*.tsbuildinfo
+.expo
+.expo-shared
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Replit internals
+.cache/
+.local/
+.cursor/
+.github/instructions/nx.instructions.md
